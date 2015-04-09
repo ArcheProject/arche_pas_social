@@ -8,4 +8,9 @@ _ = TranslationStringFactory('arche_pas_social')
 
 
 def includeme(config):
-    pass
+    try:
+        config.include('.portlet')
+    except (ImportError, AttributeError):
+        logger.warn("Can't enable portlet - Arche is probably not installed or included.")
+    config.include('.views')
+    config.include('.models')

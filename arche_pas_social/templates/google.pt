@@ -1,0 +1,42 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="arche_pas_social">
+<span id="signinButton">
+  <span
+    class="g-signin"
+    data-callback="signinCallback"
+    data-clientid="${CLIENT_ID}"
+    data-cookiepolicy="single_host_origin"
+    data-approvalprompt="force"
+    data-scope="https://www.googleapis.com/auth/userinfo.profile">
+  </span>
+</span>
+<script type="text/javascript">
+
+function signinCallback(authResult) {
+  //console.log(authResult)
+
+  if (authResult['status']['signed_in']) {
+    // Update the app to reflect a signed in user
+    // Hide the sign-in button now that the user is authorized, for example:
+    //document.getElementById('signinButton').setAttribute('style', 'display: none');
+    
+    var request = arche.do_request('/__pas_auth__/google', {data: {access_token: authResult['access_token']}, method: 'POST'});
+    request.done(function(response, txt, jqXHR) {
+      var loc = jqXHR.getResponseHeader('X-Relocate');
+      if (loc) {
+        document.location = loc;
+      };
+    })
+  } else {
+    // Possible error values:
+    //   "user_signed_out" - User is signed-out
+    //   "access_denied" - User denied access to your app
+    //   "immediate_failed" - Could not automatically log in the user
+    arche.create_flash_message('${error_msg} ' + authResult['error'], {type: 'danger'});
+  }
+}
+</script>
+</tal:main>
