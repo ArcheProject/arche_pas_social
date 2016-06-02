@@ -1,2 +1,3 @@
-Arche pluggable authentication service README
-=============================================
+Project aborted
+===============
+This codebase is no longer active
